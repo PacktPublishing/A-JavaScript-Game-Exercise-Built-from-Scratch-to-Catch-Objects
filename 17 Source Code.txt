@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JavaScript Game Exercise</title>
+    <style>
+        #container {
+            position: relative;
+            height: 90vh;
+            width: 90%;
+            left: 5%;
+            background-color: dimgray;
+            overflow: hidden;
+        }
+        
+        .basket {
+            position: absolute;
+            height: 60px;
+            width: 120px;
+            bottom: 10%;
+            left: 10%;
+            background-color: red;
+        }
+        
+        .basket1 {
+            position: absolute;
+            height: 30%;
+            width: 80%;
+            bottom: 70%;
+            margin-left: 10%;
+            background-color: dimgray;
+        }
+        
+        .baddy {
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            top: 0;
+            left: 0;
+            background-color: blue;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div>Score : <span class="score">0</span><span class="message"></span></div>
+    <div id="container">
+        <div id="basketContainer" class="basket">
+            <div class="basket1"></div>
+        </div>
+    </div>
+    <script>
+        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+        var start = window.mozAnimationStartTime; // Only supported in FF. Other browsers can use something like Date.now().
+        var container = document.getElementById('container');
+        var basketContainer = document.getElementById('basketContainer');
+        var score = 0;
+        var totalBad = 10;
+        var gameplay = true;
+        var keys = {
+            ArrowUp: false
+            , ArrowDown: false
+            , ArrowLeft: false
+            , ArrowRight: false
+        }
+        var basket = {
+            x: 0
+            , y: 0
+            , el: basketContainer
+            , width: basketContainer.offsetWidth
+            , height: basketContainer.offsetHeight
+            , left: basketContainer.offsetLeft
+            , top: basketContainer.offsetTop
+        }
+        var myContainer = {
+            width: container.offsetWidth
+            , height: container.offsetHeight
+            , left: container.offsetLeft
+            , top: container.offsetTop
+        }
+        var speed = 3;
+        document.addEventListener('keydown', pressKeyOn);
+        document.addEventListener('keyup', pressKeyOff);
+        var enemy = [];
+        setupBadGuys(3);
+        
+        requestAnimationFrame(playGame);
+        
+        function setupBadGuys(num){
+            for(var x=0;x<num;x++){
+                var temp = 'badGuy' + (x+1);
+                var div = document.createElement('div');
+                div.innerHTML = (x+1);
+                div.setAttribute('class','baddy');
+                div.setAttribute('id',temp);
+                container.appendChild(div);
+                enemy.push({
+                    x:0,y:0,el:div,speed:5
+                })
+                makeBad(enemy[x])
+            }
+        }
+        function makeBad(e){
+            if(totalBad < 1){ gameplay = false; }
+            totalBad--;
+            var randomWidth = Math.floor(Math.random() *50)+50;
+            e.x = Math.floor(Math.random() * (myContainer.width - randomWidth));
+            e.speed = Math.ceil(Math.random()*10)+2;
+            e.y = Math.floor(Math.random()*500) * -1;
+            e.el.style.left = e.x + 'px';
+            e.el.style.width = randomWidth + 'px';
+            e.el.style.backgroundColor = randomColor();
+        }
+        
+        function randomColor(){
+            function c() {
+                var hex = Math.floor(Math.random() *256).toString(16);
+                return ('0'+String(hex)).substr(-2)
+            }
+            return '#' + c() + c() + c();
+        }
+        
+        
+        
+        function bgMover(e){
+            e.y += e.speed;
+            if(e.y >500){
+                makeBad(e)
+            }
+            if(colDetection(basket.el, e.el)){
+                scoreUpdate();
+                makeBad(e)
+                console.log('hit');
+            }
+            e.el.style.top = e.y + 'px';
+        }
+        
+        function scoreUpdate(){
+            score ++;
+            document.querySelector('.score').innerText = score;
+        }
+        
+        function playGame() {
+            if(gameplay){
+            //console.log(keys);
+            if (keys.ArrowUp && basket.y < (myContainer.height - basket.height)) {
+                basket.y += speed;
+            }
+            if (keys.ArrowDown && basket.y > 0) {
+                basket.y -= speed;
+            }
+            if (keys.ArrowRight && basket.x < (myContainer.width - basket.width)) {
+                basket.x += speed;
+            }
+            if (keys.ArrowLeft && basket.x > 0) {
+                basket.x -= speed;
+            }
+            basket.el.style.left = basket.x + 'px';
+            basket.el.style.bottom = basket.y + 'px';
+            for(var i =0;i<enemy.length;i++){
+                bgMover(enemy[i])
+            }
+            
+            /*
+            var second = document.querySelector('.baddy');
+            var test = colDetection(basket.el, second)
+            */
+            requestAnimationFrame(playGame);
+            }else{
+                   //Game Over
+                document.querySelector('.message').innerHTML = 'GAME OVER';
+            }
+        }
+        function colDetection(first, second) {
+            var a = first.getBoundingClientRect();
+            var b = second.getBoundingClientRect();
+            return !(
+                ((a.top + a.height) < (b.top)) || (a.top > (b.top + b.height)) || ((a.left + a.width) < b.left) || (a.left > (b.left + b.width)));
+        }
+        function pressKeyOn(event) {
+            event.preventDefault();
+            keys[event.key] = true;
+        }
+        function pressKeyOff(event) {
+            event.preventDefault();
+            keys[event.key] = false;
+        }
+    </script>
+</body>
+</html>

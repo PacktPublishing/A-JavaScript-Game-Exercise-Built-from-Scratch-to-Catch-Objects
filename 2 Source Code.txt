@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JavaScript Game Exercise</title>
+    <style></style>
+</head>
+<body>
+    <div id="output">Hello World</div>
+    <script>
+        var counter = 0;
+        var el = document.getElementById('output');
+        el.style.position = 'absolute';
+        el.addEventListener('click', moveEle);
+        function moveEle() {
+            console.log(counter)
+            counter++;
+            el.style.left = (counter * 3) + 'px';
+            if (counter < 100) {
+                window.requestAnimationFrame(moveEle);
+            }
+        }
+    </script>
+</body>
+</html>

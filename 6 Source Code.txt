@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JavaScript Game Exercise</title>
+    <style>
+        #output2 {
+            position: relative;
+            top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="output">Hello World</div>
+    <div id="output2">Stop Animation</div>
+    <div id="output3">Start Animation</div>
+    <script>
+        //https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+        var start = window.mozAnimationStartTime;  // Only supported in FF. Other browsers can use something like Date.now().
+        var myReq;
+        var counter = 0;
+        var toggle = 1;
+        var h =0;
+        var el = document.getElementById('output');
+        var el2 = document.getElementById('output2');
+        var el3 = document.getElementById('output3');
+        el.style.position = 'absolute';
+        el.addEventListener('click', moveEle);
+        el2.addEventListener('click', removeEle);
+        el3.addEventListener('click', moveEle);
+        function moveEle() {
+            console.log(counter)
+            counter++;
+            h=h+(toggle*3);
+            el.style.left = h + 'px';
+            if (counter < 100) {
+                myReq = requestAnimationFrame(moveEle);
+            }else{
+                counter=0;
+                toggle=toggle*-1;
+            }
+        }
+        function removeEle() {
+            cancelAnimationFrame(myReq);
+        }
+    </script>
+</body>
+</html>

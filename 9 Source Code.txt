@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JavaScript Game Exercise</title>
+    <style>
+        #container {
+            position: relative;
+            height: 90vh;
+            width:90%;
+            left:5%;
+            background-color:dimgray;
+            overflow: hidden;
+        }
+        .basket {
+            position: absolute;
+            height: 60px;
+            width:120px;
+            bottom:10%;
+            left:10%;
+            background-color: red;
+        }
+        .basket1{
+            position: absolute;
+            height: 30%;
+            width:80%;
+            bottom:70%;
+            margin-left:10%;
+            background-color: dimgray;
+        }
+        .baddy{
+            position: absolute;
+            height: 100px;
+            width:100px;
+            top:0;
+            left:0;
+            background-color: blue;
+            border-radius: 50px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div>Score : <span class="score">0</span></div>
+    <div id="container">
+        <div id="basket" class="basket">
+            <div class="basket1"></div>
+        </div>
+        <div class="baddy"></div>
+    </div>
+    <script>
+        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+        var start = window.mozAnimationStartTime;  // Only supported in FF. Other browsers can use something like Date.now().
+  
+        var keys = {
+                    up:false,
+                    down:false,
+                    left:false,
+                    right:false
+        }
+        
+        document.addEventListener('keydown', pressKeyOn);
+        document.addEventListener('keyup', pressKeyOff);
+        requestAnimationFrame(playGame);
+        
+        function playGame(){
+            
+            requestAnimationFrame(playGame);
+        }
+        
+        
+        function pressKeyOn(event){
+            event.preventDefault();
+            var k = event.keyCode;
+            console.log(event.keyCode);
+            if(k === 37) keys.left = true;
+            else if(k === 38) keys.up = true;
+            else if(k === 39) keys.right = true;
+            else if(k === 40) keys.down = true;
+        }
+        
+        function pressKeyOff(event){
+            event.preventDefault();
+            var k = event.keyCode;
+            if(k === 37) keys.left = false;
+            else if(k === 38) keys.up = false;
+            else if(k === 39) keys.right = false;
+            else if(k === 40) keys.down = false;
+        }
+        
+        
+        
+        
+        
+    </script>
+</body>
+</html>

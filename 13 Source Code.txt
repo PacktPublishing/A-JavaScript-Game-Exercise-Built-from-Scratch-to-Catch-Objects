@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JavaScript Game Exercise</title>
+    <style>
+        #container {
+            position: relative;
+            height: 90vh;
+            width: 90%;
+            left: 5%;
+            background-color: dimgray;
+            overflow: hidden;
+        }
+        
+        .basket {
+            position: absolute;
+            height: 60px;
+            width: 120px;
+            bottom: 10%;
+            left: 10%;
+            background-color: red;
+        }
+        
+        .basket1 {
+            position: absolute;
+            height: 30%;
+            width: 80%;
+            bottom: 70%;
+            margin-left: 10%;
+            background-color: dimgray;
+        }
+        
+        .baddy {
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            top: 0;
+            left: 0;
+            background-color: blue;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div>Score : <span class="score">0</span></div>
+    <div id="container">
+        <div id="basketContainer" class="basket">
+            <div class="basket1"></div>
+        </div>
+        <div class="baddy"></div>
+    </div>
+    <script>
+        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+        var start = window.mozAnimationStartTime; // Only supported in FF. Other browsers can use something like Date.now().
+        var container = document.getElementById('container');
+        var basketContainer = document.getElementById('basketContainer');
+        var keys = {
+            ArrowUp: false
+            , ArrowDown: false
+            , ArrowLeft: false
+            , ArrowRight: false
+        }
+        var basket = {
+            x: 0
+            , y: 0
+            , el: basketContainer
+            , width: basketContainer.offsetWidth
+            , height: basketContainer.offsetHeight
+            , left: basketContainer.offsetLeft
+            , top: basketContainer.offsetTop
+        }
+        var myContainer = {
+            width: container.offsetWidth
+            , height: container.offsetHeight
+            , left: container.offsetLeft
+            , top: container.offsetTop
+        }
+        var speed = 3;
+        document.addEventListener('keydown', pressKeyOn);
+        document.addEventListener('keyup', pressKeyOff);
+        requestAnimationFrame(playGame);
+        function playGame() {
+            //console.log(keys);
+            if (keys.ArrowUp &&  basket.y < (myContainer.height - basket.height)) {
+                basket.y += speed;
+            }
+            if (keys.ArrowDown && basket.y > 0) {
+                basket.y -= speed;
+            }
+            if (keys.ArrowRight && basket.x < (myContainer.width - basket.width) ) {
+                basket.x += speed;
+            }
+            if (keys.ArrowLeft && basket.x > 0 ) {
+                basket.x -= speed;
+            }
+            basket.el.style.left = basket.x + 'px';
+            basket.el.style.bottom = basket.y + 'px';
+            var second = document.querySelector('.baddy');
+            var test = colDetection(basket.el,second)
+            console.log(test);
+            //movement
+            requestAnimationFrame(playGame);
+        }
+//https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+        function colDetection(first,second){
+            var a = first.getBoundingClientRect();
+            var b = second.getBoundingClientRect();
+            return !(
+                ((a.top + a.height) < (b.top)) || (a.top > (b.top + b.height)) || ((a.left + a.width) < b.left) || (a.left > (b.left + b.width))); 
+        }
+        
+        function pressKeyOn(event) {
+            event.preventDefault();
+            keys[event.key] = true;
+        }
+        function pressKeyOff(event) {
+            event.preventDefault();
+            keys[event.key] = false;
+        }
+    </script>
+</body>
+</html>
